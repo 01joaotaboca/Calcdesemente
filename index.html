@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta name="theme-color" content="#07150d">
+<title>Agro na Palma da Mão</title>
+<link rel="manifest" href="manifest.json">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@400;600;700&family=Space+Mono:wght@400;700&family=Syne:wght@700&display=swap" rel="stylesheet">
+<style>
+    :root {
+        --bg: #07150d; --card: #0e2717; --card2: #123220; --borda: #1d4a2c;
+        --verde: #2e7d32; --verde-claro: #7bd88f; --ouro: #f0c040; --ouro-esc: #c9a02c;
+        --texto: #e8f3ea; --mudo: #8fb39a; --perigo: #ef5350;
+        --f-titulo: 'Bebas Neue', 'Syne', Impact, sans-serif;
+        --f-corpo: 'DM Sans', 'Segoe UI', Roboto, sans-serif;
+        --f-mono: 'Space Mono', ui-monospace, Menlo, Consolas, monospace;
+    }
+    * { -webkit-tap-highlight-color: transparent; }
+
+    /* --- ABERTURA --- */
+    #splash {
+        position: fixed; inset: 0; z-index: 9999;
+        background: radial-gradient(circle at 50% 35%, #14391f 0%, var(--bg) 70%);
+        color: var(--texto); display: flex; flex-direction: column; align-items: center; justify-content: center;
+        transition: opacity .45s ease; cursor: pointer; font-family: var(--f-corpo);
+    }
+    .splash-logo { font-size: 76px; animation: brotar .9s cubic-bezier(.2,1.4,.4,1) both; filter: drop-shadow(0 0 18px rgba(240,192,64,.35)); }
+    .splash-title { margin-top: 10px; font-family: var(--f-titulo); font-size: 40px; letter-spacing: 3px; color: var(--ouro); text-transform: uppercase; animation: subir .6s .3s ease both; }
+    .splash-sub { margin-top: 4px; font-size: 13px; color: var(--mudo); text-align: center; padding: 0 30px; animation: subir .6s .5s ease both; }
+    .splash-bar { margin-top: 28px; width: 140px; height: 3px; border-radius: 3px; background: var(--borda); overflow: hidden; }
+    .splash-bar i { display: block; height: 100%; width: 0; background: var(--ouro); animation: carregar 1.3s ease-out forwards; }
+    .splash-dev { position: absolute; bottom: calc(18px + env(safe-area-inset-bottom, 0px)); font-family: var(--f-mono); font-size: 10px; color: var(--mudo); letter-spacing: 1px; }
+    @keyframes brotar { from { transform: scale(0) rotate(-20deg); opacity: 0; } to { transform: none; opacity: 1; } }
+    @keyframes subir { from { transform: translateY(12px); opacity: 0; } to { transform: none; opacity: 1; } }
+    @keyframes carregar { to { width: 100%; } }
+    @media (prefers-reduced-motion: reduce) { .splash-logo, .splash-title, .splash-sub, .splash-bar i { animation: none; } .splash-bar i { width: 100%; } }
+
+    /* --- GERAL --- */
+    body { font-family: var(--f-corpo); background: var(--bg); color: var(--texto); margin: 0; padding: 10px 10px 60px; }
+    .header-app { text-align: center; padding: 6px 0 14px; }
+    .header-app h1 { margin: 0; font-family: var(--f-titulo); font-weight: 400; font-size: 1.55rem; letter-spacing: 2px; color: var(--ouro); text-transform: uppercase; }
+    .header-app p { margin: 2px 0 0; font-family: var(--f-mono); font-size: 9px; letter-spacing: 1px; color: var(--mudo); text-transform: uppercase; }
+    .card { max-width: 480px; margin: 0 auto 10px; background: var(--card); padding: 12px; border-radius: 14px; border: 1px solid var(--borda); border-top: 3px solid var(--verde); box-shadow: 0 6px 18px rgba(0,0,0,.35); }
+    .card-blue { border-top-color: var(--ouro); }
+    .card-orange { border-top-color: var(--ouro-esc); }
+    h3 { margin: 0 0 8px; font-family: var(--f-mono); font-size: 10px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; color: var(--ouro); display: flex; align-items: center; gap: 8px; padding-bottom: 8px; border-bottom: 1px solid var(--borda); }
+    label { display: block; margin: 8px 0 4px; font-weight: 600; color: var(--mudo); font-size: 11px; }
+    input, select { width: 100%; padding: 9px 10px; border: 1.5px solid var(--borda); border-radius: 9px; box-sizing: border-box; font-size: 15px; font-family: var(--f-corpo); background: var(--bg); color: var(--texto); outline: none; transition: border-color .2s, box-shadow .2s; }
+    input::placeholder { color: #4d6e58; }
+    input:focus, select:focus { border-color: var(--ouro); box-shadow: 0 0 0 3px rgba(240,192,64,.15); }
+    select option { background: var(--card); color: var(--texto); }
+    .box-destaque { padding: 9px; border-radius: 10px; margin: 10px 0 2px; text-align: center; background: var(--bg); border: 1px solid var(--borda); }
+    .resultado-valor { font-family: var(--f-mono); font-size: 21px; font-weight: 700; display: block; margin: 2px 0; color: var(--ouro); }
+    .text-germ, .text-recom, .text-custo { color: var(--ouro); }
+    .bg-germ { border-color: #2c6b3f; }
+    .bg-recom, .bg-custo { border-color: var(--borda); }
+    .grid { display: flex; gap: 8px; }
+    .grid > div { flex: 1; min-width: 0; }
+    .sep { border-top: 1px dashed var(--borda); margin: 8px 0 6px; }
+    .dica { font-size: 10px; color: var(--mudo); margin: 6px 0 0; }
+    .btn { cursor: pointer; border: none; font-family: var(--f-corpo); font-weight: 700; border-radius: 10px; padding: 12px; width: 100%; font-size: 14px; display: flex; align-items: center; justify-content: center; gap: 8px; margin-top: 8px; }
+    .btn:active { transform: scale(.98); }
+    .btn-save { background: var(--ouro); color: #1a1500; }
+    .btn-whats { background: #1faa59; color: #fff; }
+    .btn-limpar { background: transparent; color: var(--mudo); border: 1px solid var(--borda); font-size: 12px; margin-top: 18px; padding: 12px; }
+    .hist-item { background: var(--bg); border: 1px solid var(--borda); padding: 9px; border-radius: 9px; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center; gap: 8px; font-size: 13px; }
+    .btn-apagar { background: transparent; color: var(--perigo); border: 1px solid #5a2a2a; padding: 8px 10px; border-radius: 8px; cursor: pointer; font-size: 11px; font-family: var(--f-corpo); }
+    .footer-assinatura { text-align: center; font-family: var(--f-mono); font-size: 10px; letter-spacing: 1px; color: var(--mudo); padding: 12px 0; }
+    small { font-family: var(--f-mono); font-size: 9px; font-weight: 700; text-transform: uppercase; letter-spacing: .5px; color: var(--mudo); }
+    .vazio { text-align: center; color: var(--mudo); font-size: 12px; }
+</style>
+</head>
+<body>
+
+<div id="splash" onclick="fecharSplash()">
+    <div class="splash-logo">🌱</div>
+    <div class="splash-title">Agro na Palma da Mão</div>
+    <div class="splash-sub">Germinação, sementes e plantio no campo</div>
+    <div class="splash-bar"><i></i></div>
+    <div class="splash-dev">Desenvolvido por João Divino Barbosa</div>
+</div>
+<script>
+    // Já viu a abertura nesta sessão? Pula direto para o app.
+    (function () {
+        try { if (sessionStorage.getItem('splashVisto')) document.getElementById('splash').remove(); } catch (e) {}
+    })();
+</script>
+
+<div class="header-app"><h1>Agro na Palma da Mão</h1><p>Germinação · Sementes · Plantio</p></div>
+
+<div class="card">
+    <h3>🌱 1. Qualidade do Lote</h3>
+    <div class="grid">
+        <div><label>Variedade</label><input type="text" id="variedade" placeholder="Ex: M8349"></div>
+        <div><label>Lote</label><input type="text" id="lote" placeholder="Ex: 0896"></div>
+    </div>
+    <div class="grid">
+        <div><label>Semeado (un)</label><input type="number" id="total_semeado" value="100" oninput="calcularTudo()"></div>
+        <div><label>Germinado (un)</label><input type="number" id="germinadas" value="92" oninput="calcularTudo()"></div>
+    </div>
+    <div class="box-destaque bg-germ">
+        <small class="text-germ">Germinação Real</small>
+        <span id="res-porcentagem" class="resultado-valor text-germ">0%</span>
+    </div>
+</div>
+
+<div class="card card-orange">
+    <h3>🚜 2. Recomendação</h3>
+    <div class="grid">
+        <div><label>Sem/m</label><input type="number" id="sem_metro" value="12" step="0.1" inputmode="decimal" oninput="editarSm()"></div>
+        <div><label>Espaç. (m)</label><input type="number" id="espacamento" value="0.45" step="0.01" inputmode="decimal" oninput="editarEsp()"></div>
+        <div><label>Pop. (pl/ha)</label><input type="number" id="populacao" step="1000" inputmode="numeric" placeholder="266000" oninput="editarPop()"></div>
+    </div>
+    <p class="dica">Digite Sem/m <b>ou</b> a população: um calcula o outro.</p>
+
+    <label>PMS (Peso de 1.000 sementes - g)</label>
+    <input type="number" id="pms" value="180" oninput="calcularTudo()">
+
+    <div class="box-destaque bg-recom">
+        <div class="grid">
+            <div>
+                <small class="text-recom">Plantas/ha</small>
+                <span id="res-pop" class="resultado-valor text-recom" style="font-size:17px;">0</span>
+            </div>
+            <div>
+                <small class="text-recom">Sementes/ha (corrigido)</small>
+                <span id="res-sem-ha" class="resultado-valor text-recom" style="font-size:17px;">0</span>
+            </div>
+        </div>
+        <div class="sep"></div>
+        <small class="text-recom">Gasto Corrigido por Hectare</small>
+        <span id="res-kg-ha" class="resultado-valor text-recom">0 kg/ha</span>
+    </div>
+</div>
+
+<div class="card card-blue">
+    <h3>💰 3. Planejamento e Custos</h3>
+    <label>Área Total (ha)</label>
+    <input type="number" id="area_total" placeholder="Hectares" oninput="calcularTudo()">
+    <div class="grid">
+        <div><label>Embalagem</label>
+            <select id="tipo_emb" onchange="ajustarPesoPadrao()">
+                <option value="Sacos">Saco (40kg)</option>
+                <option value="Bags">Big Bag (1000kg)</option>
+            </select>
+        </div>
+        <div><label>Peso Emb (kg)</label><input type="number" id="peso_emb" value="40" oninput="calcularTudo()"></div>
+    </div>
+    <label>Preço Semente (R$/kg)</label>
+    <input type="number" id="preco_kg" placeholder="R$ 0,00" oninput="calcularTudo()">
+    <div class="box-destaque bg-custo">
+        <small class="text-custo">Total Semente / Quantidade Volumes</small>
+        <span id="res-total-kg" class="resultado-valor text-custo" style="font-size: 18px;">0 kg total</span>
+        <span id="res-volumes" class="resultado-valor text-custo" style="font-size: 15px; margin-bottom: 6px; color: var(--verde-claro);">0 volumes</span>
+        <small class="text-custo">Investimento Total</small>
+        <span id="res-custo-total" class="resultado-valor text-custo">R$ 0,00</span>
+    </div>
+    <button class="btn btn-save" onclick="salvarTeste()">💾 Salvar no Histórico</button>
+    <button class="btn btn-whats" onclick="enviarWhatsApp()">Mandar no WhatsApp</button>
+</div>
+
+<div class="card" style="border-top-color: var(--borda);">
+    <h3>📋 Histórico de Testes</h3>
+    <div id="lista-historico"></div>
+    <button class="btn btn-limpar" onclick="limparTudo()">Limpar tudo</button>
+</div>
+
+<div class="footer-assinatura">Desenvolvido por João Divino Barbosa</div>
+
+<script>
+    // ---------- ABERTURA ----------
+    let splashFechada = false;
+    function fecharSplash() {
+        if (splashFechada) return;
+        splashFechada = true;
+        try { sessionStorage.setItem('splashVisto', '1'); } catch (e) {}
+        const s = document.getElementById('splash');
+        if (!s) return;
+        s.style.opacity = '0';
+        setTimeout(() => s.remove(), 450);
+    }
+
+    document.addEventListener('DOMContentLoaded', function () {
+        setTimeout(fecharSplash, 1500);
+        sincronizar();
+        carregarHistorico();
+        calcularTudo();
+    });
+
+    // ---------- UTILIDADES ----------
+    const $ = id => document.getElementById(id);
+    const num = (id, def = 0) => parseFloat($(id).value) || def;
+    const fmt = n => Math.round(n).toLocaleString('pt-BR');
+    const esc = s => String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+
+    // ---------- POPULAÇÃO x SEM/M ----------
+    let ultimo = 'sm'; // qual campo o usuário mexeu por último: 'sm' ou 'pop'
+
+    function sincronizar() {
+        const esp = num('espacamento', 0.45);
+        if (ultimo === 'sm') {
+            const sm = num('sem_metro');
+            $('populacao').value = sm ? Math.round(sm * 10000 / esp) : '';
+        } else {
+            const pop = num('populacao');
+            $('sem_metro').value = pop ? Math.round(pop * esp / 10000 * 100) / 100 : '';
+        }
+    }
+    function editarSm()  { ultimo = 'sm';  sincronizar(); calcularTudo(); }
+    function editarPop() { ultimo = 'pop'; sincronizar(); calcularTudo(); }
+    function editarEsp() { sincronizar(); calcularTudo(); }
+
+    // ---------- CÁLCULOS ----------
+    function ajustarPesoPadrao() {
+        $('peso_emb').value = ($('tipo_emb').value === "Sacos") ? 40 : 1000;
+        calcularTudo();
+    }
+
+    function calcularTudo() {
+        const totalS = num('total_semeado', 100);
+        const germ = num('germinadas');
+        const pGerm = germ / totalS;
+        $('res-porcentagem').innerText = (pGerm * 100).toFixed(1).replace('.', ',') + "%";
+
+        const esp = num('espacamento', 0.45);
+        const pms = num('pms');
+
+        // População (plantas/ha) desejada
+        const popHa = (ultimo === 'pop') ? num('populacao') : num('sem_metro') * 10000 / esp;
+        // Sementes/ha corrigidas pela germinação
+        const sReal = pGerm > 0 ? popHa / pGerm : popHa;
+        const kgHa = (sReal * pms) / 1000000;
+
+        $('res-pop').innerText = fmt(popHa);
+        $('res-sem-ha').innerText = fmt(sReal);
+        $('res-kg-ha').innerText = kgHa.toFixed(2).replace('.', ',') + " kg/ha";
+
+        const area = num('area_total');
+        const precoKg = num('preco_kg');
+        const pesoEmb = num('peso_emb', 40);
+        const tipoLabel = $('tipo_emb').value === "Sacos" ? "Saco(s)" : "Bag(s)";
+
+        const tKg = kgHa * area;
+        const qteVolumes = tKg > 0 ? Math.ceil(tKg / pesoEmb) : 0;
+
+        $('res-total-kg').innerText = Math.round(tKg).toLocaleString('pt-BR') + " kg total";
+        $('res-volumes').innerText = qteVolumes + " " + tipoLabel;
+        $('res-custo-total').innerText = (tKg * precoKg).toLocaleString('pt-BR', {style: 'currency', currency: 'BRL'});
+    }
+
+    // ---------- HISTÓRICO ----------
+    function salvarTeste() {
+        const teste = {
+            id: Date.now(),
+            var_nome: $('variedade').value || 'Sem Nome',
+            lote_nome: $('lote').value || '---',
+            germ: $('res-porcentagem').innerText,
+            pop: $('res-pop').innerText,
+            kgHa: $('res-kg-ha').innerText,
+            data: new Date().toLocaleString('pt-BR', {day:'2-digit', month:'2-digit', hour:'2-digit', minute:'2-digit'})
+        };
+        const hist = JSON.parse(localStorage.getItem('agro_hist') || '[]');
+        hist.unshift(teste);
+        localStorage.setItem('agro_hist', JSON.stringify(hist));
+        carregarHistorico();
+    }
+
+    function carregarHistorico() {
+        const lista = $('lista-historico');
+        const hist = JSON.parse(localStorage.getItem('agro_hist') || '[]');
+        if (hist.length === 0) {
+            lista.innerHTML = '<p class="vazio">Nenhum teste salvo.</p>';
+            return;
+        }
+        lista.innerHTML = hist.map(t => `
+            <div class="hist-item">
+                <div class="hist-info">
+                    <strong>${esc(t.var_nome)}</strong> (Lote: ${esc(t.lote_nome)})<br>
+                    <small>${esc(t.data)} | Germ: ${esc(t.germ)}${t.pop ? ' | ' + esc(t.pop) + ' pl/ha' : ''} | ${esc(t.kgHa)}</small>
+                </div>
+                <button class="btn-apagar" onclick="removerTeste(${Number(t.id)})">Apagar</button>
+            </div>`).join('');
+    }
+
+    function removerTeste(id) {
+        let hist = JSON.parse(localStorage.getItem('agro_hist') || '[]');
+        hist = hist.filter(t => t.id !== id);
+        localStorage.setItem('agro_hist', JSON.stringify(hist));
+        carregarHistorico();
+    }
+
+    function limparTudo() { if (confirm("Apagar tudo?")) { localStorage.clear(); location.reload(); } }
+
+    // ---------- WHATSAPP ----------
+    function enviarWhatsApp() {
+        const msg = [
+            '*🌱 AGRO NA PALMA DA MÃO*',
+            '*RELATÓRIO DE SEMEADURA*',
+            '---------------------------------',
+            '*IDENTIFICAÇÃO*',
+            '🔹 *Variedade:* ' + ($('variedade').value || '---'),
+            '🔹 *Lote:* ' + ($('lote').value || '---'),
+            '🔹 *Germinação:* ' + $('res-porcentagem').innerText,
+            '',
+            '*RECOMENDAÇÃO*',
+            '📏 *Sementes/m:* ' + $('sem_metro').value,
+            '↔️ *Espaçamento:* ' + $('espacamento').value + ' m',
+            '🌿 *População:* ' + $('res-pop').innerText + ' plantas/ha',
+            '🌰 *Sementes/ha (corrigido):* ' + $('res-sem-ha').innerText,
+            '🚜 *Gasto/ha:* ' + $('res-kg-ha').innerText,
+            '📍 *Área:* ' + ($('area_total').value || '0') + ' ha',
+            '',
+            '*LOGÍSTICA E INVESTIMENTO*',
+            '📦 *Semente Total:* ' + $('res-total-kg').innerText,
+            '🚚 *Volume Estimado:* ' + $('res-volumes').innerText,
+            '💰 *Preço por kg:* ' + num('preco_kg').toLocaleString('pt-BR', {style: 'currency', currency: 'BRL'}),
+            '✅ *TOTAL:* ' + $('res-custo-total').innerText,
+            '---------------------------------',
+            '🕒 _' + new Date().toLocaleString('pt-BR') + '_',
+            '👨‍💻 _Desenvolvido por João Divino Barbosa_'
+        ].join('\n');
+        window.open('https://wa.me/?text=' + encodeURIComponent(msg), '_blank');
+    }
+
+    // ---------- OFFLINE ----------
+    if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('sw.js').catch(() => {});
+    }
+</script>
+</body>
+</html>
